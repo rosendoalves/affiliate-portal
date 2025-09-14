@@ -26,6 +26,11 @@ services:
     volumes:
       - ./web/src:/app/src
       - ./web/public:/app/public
+      - ./web/tsconfig.json:/app/tsconfig.json
+      - ./web/tsconfig.app.json:/app/tsconfig.app.json
+      - ./web/tsconfig.node.json:/app/tsconfig.node.json
+      - ./web/vite.config.ts:/app/vite.config.ts
+      - ./web/eslint.config.js:/app/eslint.config.js
       - /app/node_modules
     depends_on:
       - api

@@ -55,7 +55,6 @@ export const Dashboard: React.FC = () => {
   const [rows, setRows] = useState<Row[]>([]);
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<string>('');
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const canLoad = useMemo(() => !!from && !!to, [from, to]);
 
@@ -70,8 +69,9 @@ export const Dashboard: React.FC = () => {
       setSum(s);
       setRows(r);
       setMsg('');
-    } catch (e: any) {
-      setMsg(e?.response?.data?.message || e?.message || 'Error loading data');
+    } catch (e: unknown) {
+      const error = e as { response?: { data?: { message?: string } }; message?: string };
+      setMsg(error?.response?.data?.message || error?.message || 'Error loading data');
     } finally {
       setBusy(false);
     }
@@ -84,8 +84,9 @@ export const Dashboard: React.FC = () => {
       const res = await ingest();
       setMsg(`Ingest ok: read=${res.read} clicks=${res.clicks} conv=${res.conversions} dedup=${res.dedup} (${res.seconds}s)`);
       await load();
-    } catch (e: any) {
-      setMsg(e?.response?.data?.message || e?.message || 'Error in ingest');
+    } catch (e: unknown) {
+      const error = e as { response?: { data?: { message?: string } }; message?: string };
+      setMsg(error?.response?.data?.message || error?.message || 'Error in ingest');
     } finally {
       setBusy(false);
     }
@@ -98,8 +99,9 @@ export const Dashboard: React.FC = () => {
       const res = await syncFromAPIs(7); // Sync last 7 days
       setMsg(`Sync ok: processed=${res.totalProcessed} errors=${res.errors} (${res.seconds}s)`);
       await load();
-    } catch (e: any) {
-      setMsg(e?.response?.data?.message || e?.message || 'Error in sync');
+    } catch (e: unknown) {
+      const error = e as { response?: { data?: { message?: string } }; message?: string };
+      setMsg(error?.response?.data?.message || error?.message || 'Error in sync');
     } finally {
       setBusy(false);
     }
@@ -107,15 +109,8 @@ export const Dashboard: React.FC = () => {
 
   useEffect(() => {
     load();
-  }, []);
+  }, [load]);
 
-  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-  };
 
 
   const downloadCSV = (rows: Row[]) => {
