@@ -31,8 +31,8 @@ export class IngestService {
     async autoIngest() { 
         try {
             await this.ingest(); 
-        } catch (error) {
-            console.log('Auto-ingest skipped:', error.message);
+        } catch (error: any) {
+            console.log('Auto-ingest skipped:', error?.message || 'Unknown error');
         }
     }
     async ingest(filePath?: string) {
@@ -108,7 +108,7 @@ export class IngestService {
                                     },
                                 });
                                 convs++;
-                            } catch (e: any) {
+                            } catch {
                                 dedup++;
                             }
                         }
