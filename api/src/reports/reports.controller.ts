@@ -74,7 +74,6 @@ export class ReportsController {
     ) {
         const start = new Date(from), end = new Date(to);
 
-        // Agrupamos "a mano" (MVP) con dos queries y un merge en memoria
         const conv = await this.prisma.conversion.findMany({
             where: { eventAt: { gte: start, lte: end } },
             select: { subAffiliateId: true, amount: true },

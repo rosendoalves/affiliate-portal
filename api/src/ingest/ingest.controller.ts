@@ -8,14 +8,12 @@ import { IngestRunQueryDto, IngestRunResponseDto } from './dtos/ingest.dto';
 export class IngestController {
   constructor(private readonly ingestService: IngestService) { }
 
-  // POST /ingest/run?file=../data/drop/events.csv
   @Post('run')
   @ApiOkResponse({ type: IngestRunResponseDto })
   run(@Query() q: IngestRunQueryDto): Promise<IngestRunResponseDto> {
     return this.ingestService.ingest(q.file);
   }
 
-  // POST /ingest/sync?days=7
   @Post('sync')
   @ApiOperation({ summary: 'Sync data from affiliate network APIs' })
   @ApiOkResponse({ description: 'Data synced successfully' })
@@ -24,7 +22,6 @@ export class IngestController {
     return this.ingestService.syncFromAPIs(daysNumber);
   }
 
-  // GET /ingest/history
   @Get('history')
   @ApiOperation({ summary: 'Get processing history of files' })
   @ApiOkResponse({ description: 'Processing history retrieved successfully' })

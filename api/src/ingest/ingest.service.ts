@@ -1,7 +1,8 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { ConnectorsService, AffiliateData } from '../connectors/connectors.service';
-import { createReadStream, existsSync, createHash, readFileSync } from 'fs';
+import { createReadStream, existsSync, readFileSync } from 'fs';
+import { createHash } from 'crypto';
 import { parse } from 'fast-csv';
 import { z } from 'zod';
 import dayjs from 'dayjs';
@@ -26,10 +27,15 @@ export class IngestService {
         private readonly connectorsService: ConnectorsService,
     ) { }
 
-    // @Cron('*/15 * * * *')
-    // async autoIngest() { await this.ingest(); }
+    @Cron('*/15 * * * *')
+    async autoIngest() { 
+        try {
+            await this.ingest(); 
+        } catch (error) {
+            console.log('Auto-ingest skipped:', error.message);
+        }
+    }
     async ingest(filePath?: string) {
-        // por defecto: ../data/drop/events.csv relativo a /api
         const defaultPath = path.resolve(process.cwd(), '../data/drop/events.csv');
         const fp = filePath ? path.resolve(filePath) : defaultPath;
 
@@ -39,7 +45,6 @@ export class IngestService {
             );
         }
 
-        // Verificar si el archivo ya fue procesado
         const fileHash = await this.getFileHash(fp);
         const existingFile = await this.prisma.processedFile.findUnique({
             where: { filePath: fp }
@@ -63,13 +68,12 @@ export class IngestService {
         const t0 = Date.now();
         let read = 0, clicks = 0, convs = 0, dedup = 0, errors = 0;
 
-        // Para evitar cientos de promesas simultáneas, procesamos secuencialmente
         await new Promise<void>((resolve, reject) => {
             const stream = createReadStream(fp)
                 .pipe(parse({ headers: true, ignoreEmpty: true, trim: true }))
                 .on('error', reject)
                 .on('data', async (raw: any) => {
-                    stream.pause(); // procesamos fila por fila
+                    stream.pause();
                     read++;
                     try {
                         const p = Row.parse(raw);
@@ -105,7 +109,6 @@ export class IngestService {
                                 });
                                 convs++;
                             } catch (e: any) {
-                                // viola @@unique([networkId, extConversionId]) -> duplicado
                                 dedup++;
                             }
                         }
@@ -121,7 +124,6 @@ export class IngestService {
 
         const processingTime = Number(((Date.now() - t0) / 1000).toFixed(2));
         
-        // Guardar el registro del archivo procesado
         await this.prisma.processedFile.upsert({
             where: { filePath: fp },
             update: {
@@ -249,7 +251,7 @@ export class IngestService {
     async getProcessingHistory() {
         return this.prisma.processedFile.findMany({
             orderBy: { processedAt: 'desc' },
-            take: 50 // Últimos 50 archivos procesados
+            take: 50
         });
     }
 
