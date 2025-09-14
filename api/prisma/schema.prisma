@@ -10,12 +10,15 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+
 model Network {
   id        Int       @id @default(autoincrement())
   name      String    @unique
   createdAt DateTime  @default(now())
   conversions Conversion[]
   clicks      Click[]
+
+  @@map("networks")
 }
 
 model SubAffiliate {
@@ -25,6 +28,8 @@ model SubAffiliate {
   createdAt DateTime  @default(now())
   conversions Conversion[]
   clicks      Click[]
+
+  @@map("sub_affiliates")
 }
 
 model Conversion {
@@ -43,6 +48,7 @@ model Conversion {
   @@unique([networkId, extConversionId])
   @@index([subAffiliateId, eventAt])
   @@index([networkId, eventAt])
+  @@map("conversions")
 }
 
 model Click {
@@ -57,4 +63,5 @@ model Click {
 
   @@index([subAffiliateId, eventAt])
   @@index([networkId, eventAt])
+  @@map("clicks")
 }

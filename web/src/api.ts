@@ -1,25 +1,29 @@
-const API = import.meta.env.VITE_API_URL as string;
+import axios from 'axios';
+
+const API_URL = import.meta.env.VITE_API_URL as string;
+
+const api = axios.create({
+  baseURL: API_URL,
+});
 
 export async function ingest(file?: string) {
-  const url = new URL(`${API}/ingest/run`);
-  if (file) url.searchParams.set('file', file);
-  const res = await fetch(url.toString(), { method: 'POST' });
-  if (!res.ok) throw new Error(await res.text());
-  return res.json();
+  const params = file ? { file } : {};
+  const response = await api.post('/ingest/run', null, { params });
+  return response.data;
 }
 
 export async function getSummary(params: { from: string; to: string; network?: string; sub?: string; }) {
-  const url = new URL(`${API}/reports/summary`);
-  Object.entries(params).forEach(([k,v]) => v && url.searchParams.set(k, String(v)));
-  const res = await fetch(url.toString());
-  if (!res.ok) throw new Error(await res.text());
-  return res.json();
+  const response = await api.get('/reports/summary', { params });
+  return response.data;
 }
 
 export async function getSubaffiliates(params: { from: string; to: string; }) {
-  const url = new URL(`${API}/reports/subaffiliates`);
-  Object.entries(params).forEach(([k,v]) => v && url.searchParams.set(k, String(v)));
-  const res = await fetch(url.toString());
-  if (!res.ok) throw new Error(await res.text());
-  return res.json();
+  const response = await api.get('/reports/subaffiliates', { params });
+  return response.data;
+}
+
+export async function syncFromAPIs(days?: number) {
+  const params = days ? { days: days.toString() } : {};
+  const response = await api.post('/ingest/sync', null, { params });
+  return response.data;
 }

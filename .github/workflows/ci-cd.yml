@@ -1,0 +1,129 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  # Job 1: Tests y Linting
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+        cache: 'npm'
+        cache-dependency-path: |
+          api/package-lock.json
+          web/package-lock.json
+
+    # Backend Tests
+    - name: Install API dependencies
+      working-directory: ./api
+      run: npm ci
+
+    - name: Generate Prisma Client
+      working-directory: ./api
+      run: npx prisma generate
+
+    - name: Run API linting
+      working-directory: ./api
+      run: npm run lint
+
+    # Frontend Tests
+    - name: Install Web dependencies
+      working-directory: ./web
+      run: npm ci
+
+    - name: Run Web linting
+      working-directory: ./web
+      run: npm run lint
+
+    - name: Build Web
+      working-directory: ./web
+      run: npm run build
+
+  # Job 2: Build Docker Images
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Log in to Container Registry
+      uses: docker/login-action@v3
+      with:
+        registry: ${{ env.REGISTRY }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Extract metadata
+      id: meta
+      uses: docker/metadata-action@v5
+      with:
+        images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+        tags: |
+          type=ref,event=branch
+          type=ref,event=pr
+          type=sha,prefix={{branch}}-
+          type=raw,value=latest,enable={{is_default_branch}}
+
+    # Build API Image
+    - name: Build and push API image
+      uses: docker/build-push-action@v5
+      with:
+        context: ./api
+        push: true
+        tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-api:${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+
+    # Build Web Image
+    - name: Build and push Web image
+      uses: docker/build-push-action@v5
+      with:
+        context: ./web
+        push: true
+        tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-web:${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+
+  # Job 3: Deploy (opcional)
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    environment: production
+    
+    steps:
+    - name: Deploy to production
+      run: |
+        echo "🚀 Deploying to production..."
+        echo "📦 Images built and pushed to ${{ env.REGISTRY }}"
+        echo "🔗 API: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-api:latest"
+        echo "🔗 Web: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-web:latest"
+        echo "💡 Ready to deploy to: Railway, Render, DigitalOcean, etc."
+        echo "📋 Use these images in your deployment platform"

@@ -1,6 +1,6 @@
 import { Controller, Post, Query } from '@nestjs/common';
 import { IngestService } from './ingest.service';
-import { ApiOkResponse, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiOkResponse, ApiTags, ApiOperation } from '@nestjs/swagger';
 import { IngestRunQueryDto, IngestRunResponseDto } from './dtos/ingest.dto';
 
 @ApiTags('ingest')
@@ -13,5 +13,14 @@ export class IngestController {
   @ApiOkResponse({ type: IngestRunResponseDto })
   run(@Query() q: IngestRunQueryDto): Promise<IngestRunResponseDto> {
     return this.ingestService.ingest(q.file);
+  }
+
+  // POST /ingest/sync?days=7
+  @Post('sync')
+  @ApiOperation({ summary: 'Sync data from affiliate network APIs' })
+  @ApiOkResponse({ description: 'Data synced successfully' })
+  async sync(@Query('days') days?: string) {
+    const daysNumber = days ? parseInt(days, 10) : 7;
+    return this.ingestService.syncFromAPIs(daysNumber);
   }
 }

@@ -1,22 +1,32 @@
 services:
   api:
-    build: ./api
+    build: 
+      context: ./api
+      target: development
     ports: ["3000:3000"]
     environment:
       - DATABASE_URL=file:/app/db/dev.db
       - NODE_ENV=development
     volumes:
+      - ./api/src:/app/src
+      - ./api/prisma:/app/prisma
       - ./db:/app/db
       - ./data:/app/data
+      - /app/node_modules
     restart: unless-stopped
 
   web:
     build:
       context: ./web
+      target: development
       args:
-        - VITE_API_URL=http://localhost:3001
+        - VITE_API_URL=http://localhost:3000
     ports:
       - "5173:5173"
+    volumes:
+      - ./web/src:/app/src
+      - ./web/public:/app/public
+      - /app/node_modules
     depends_on:
       - api
     restart: unless-stopped
