@@ -1,4 +1,4 @@
-import { Controller, Post, Query } from '@nestjs/common';
+import { Controller, Post, Query, Get } from '@nestjs/common';
 import { IngestService } from './ingest.service';
 import { ApiOkResponse, ApiTags, ApiOperation } from '@nestjs/swagger';
 import { IngestRunQueryDto, IngestRunResponseDto } from './dtos/ingest.dto';
@@ -22,5 +22,13 @@ export class IngestController {
   async sync(@Query('days') days?: string) {
     const daysNumber = days ? parseInt(days, 10) : 7;
     return this.ingestService.syncFromAPIs(daysNumber);
+  }
+
+  // GET /ingest/history
+  @Get('history')
+  @ApiOperation({ summary: 'Get processing history of files' })
+  @ApiOkResponse({ description: 'Processing history retrieved successfully' })
+  async getHistory() {
+    return this.ingestService.getProcessingHistory();
   }
 }

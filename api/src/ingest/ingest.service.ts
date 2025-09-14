@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { ConnectorsService, AffiliateData } from '../connectors/connectors.service';
-import { createReadStream, existsSync } from 'fs';
+import { createReadStream, existsSync, createHash, readFileSync } from 'fs';
 import { parse } from 'fast-csv';
 import { z } from 'zod';
 import dayjs from 'dayjs';
@@ -38,6 +38,28 @@ export class IngestService {
                 `File not found: ${fp}. Provide ?file=... or place a CSV at ../data/drop/events.csv`
             );
         }
+
+        // Verificar si el archivo ya fue procesado
+        const fileHash = await this.getFileHash(fp);
+        const existingFile = await this.prisma.processedFile.findUnique({
+            where: { filePath: fp }
+        });
+
+        if (existingFile && existingFile.fileHash === fileHash) {
+            console.log(`⏭️ File already processed: ${fp}`);
+            return {
+                file: fp,
+                read: existingFile.recordsRead,
+                clicks: existingFile.clicks,
+                conversions: existingFile.conversions,
+                dedup: existingFile.duplicates,
+                errors: existingFile.errors,
+                seconds: existingFile.processingTime,
+                alreadyProcessed: true
+            };
+        }
+
+        console.log(`🔄 Processing file: ${fp}`);
         const t0 = Date.now();
         let read = 0, clicks = 0, convs = 0, dedup = 0, errors = 0;
 
@@ -87,7 +109,8 @@ export class IngestService {
                                 dedup++;
                             }
                         }
-                    } catch {
+                    } catch (error) {
+                        console.error(`❌ Error processing row ${read}:`, error);
                         errors++;
                     } finally {
                         stream.resume();
@@ -96,15 +119,45 @@ export class IngestService {
                 .on('end', () => resolve());
         });
 
-        return {
+        const processingTime = Number(((Date.now() - t0) / 1000).toFixed(2));
+        
+        // Guardar el registro del archivo procesado
+        await this.prisma.processedFile.upsert({
+            where: { filePath: fp },
+            update: {
+                fileHash,
+                recordsRead: read,
+                clicks,
+                conversions: convs,
+                duplicates: dedup,
+                errors,
+                processingTime,
+                processedAt: new Date()
+            },
+            create: {
+                filePath: fp,
+                fileHash,
+                recordsRead: read,
+                clicks,
+                conversions: convs,
+                duplicates: dedup,
+                errors,
+                processingTime
+            }
+        });
+
+        const result = {
             file: fp,
             read,
             clicks,
             conversions: convs,
             dedup,
             errors,
-            seconds: Number(((Date.now() - t0) / 1000).toFixed(2)),
+            seconds: processingTime,
         };
+
+        console.log(`✅ Processing completed:`, result);
+        return result;
     }
 
     async syncFromAPIs(days: number = 7) {
@@ -191,5 +244,19 @@ export class IngestService {
                 }
             }
         }
+    }
+
+    async getProcessingHistory() {
+        return this.prisma.processedFile.findMany({
+            orderBy: { processedAt: 'desc' },
+            take: 50 // Últimos 50 archivos procesados
+        });
+    }
+
+    private async getFileHash(filePath: string): Promise<string> {
+        const fileBuffer = readFileSync(filePath);
+        const hashSum = createHash('sha256');
+        hashSum.update(fileBuffer);
+        return hashSum.digest('hex');
     }
 }

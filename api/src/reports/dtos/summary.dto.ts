@@ -22,10 +22,10 @@ export class SummaryQueryDto {
   sub?: string;
 
   // helpers opcionales: transformar a Date si querés usarlo directo
-  @Transform(({ obj }) => new Date(obj.from), { toClassOnly: true })
+  @Transform(({ obj }: { obj: any }) => new Date(obj.from), { toClassOnly: true })
   _fromDate?: Date;
 
-  @Transform(({ obj }) => new Date(obj.to), { toClassOnly: true })
+  @Transform(({ obj }: { obj: any }) => new Date(obj.to), { toClassOnly: true })
   _toDate?: Date;
 }
 

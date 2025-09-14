@@ -65,3 +65,18 @@ model Click {
   @@index([networkId, eventAt])
   @@map("clicks")
 }
+
+model ProcessedFile {
+  id          Int      @id @default(autoincrement())
+  filePath    String   @unique
+  fileHash    String
+  processedAt DateTime @default(now())
+  recordsRead Int
+  clicks      Int
+  conversions Int
+  duplicates  Int
+  errors      Int
+  processingTime Float
+
+  @@map("processed_files")
+}
