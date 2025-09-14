@@ -25,9 +25,9 @@ async function bootstrap() {
     });
 
     // JSON directo (útil para compartir el spec)
-    app.getHttpAdapter().get('/docs/json', (_req, res) => res.json(document));
+    app.getHttpAdapter().get('/docs/json', (_req, res) => res.json(document as any));
   }
 
   await app.listen(process.env.PORT ?? 3000);
 }
-bootstrap();
+void bootstrap();

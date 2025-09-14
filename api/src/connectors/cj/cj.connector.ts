@@ -46,7 +46,14 @@ export class CJConnector {
       })
     );
 
-    return response.data.map((click: any) => ({
+    interface ClickData {
+      publisherId?: string;
+      campaignName?: string;
+      linkId?: string;
+      clickDate: string;
+    }
+
+    return (response.data as ClickData[]).map((click) => ({
       network: 'cj',
       type: 'click' as const,
       subCode: click.publisherId || 'UNKNOWN',
@@ -72,7 +79,16 @@ export class CJConnector {
       })
     );
 
-    return response.data.map((conversion: any) => ({
+    interface ConversionData {
+      publisherId?: string;
+      campaignName?: string;
+      commissionId?: string;
+      saleAmount?: number;
+      currency?: string;
+      eventDate: string;
+    }
+
+    return (response.data as ConversionData[]).map((conversion) => ({
       network: 'cj',
       type: 'conversion' as const,
       subCode: conversion.publisherId || 'UNKNOWN',

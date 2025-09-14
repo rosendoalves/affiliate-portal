@@ -45,7 +45,14 @@ export class ImpactConnector {
       })
     );
 
-    return response.data.map((click: any) => ({
+    interface ClickData {
+      affiliateId?: string;
+      campaignName?: string;
+      clickId?: string;
+      clickDate: string;
+    }
+
+    return (response.data as ClickData[]).map((click) => ({
       network: 'impact',
       type: 'click' as const,
       subCode: click.affiliateId || 'UNKNOWN',
@@ -70,7 +77,16 @@ export class ImpactConnector {
       })
     );
 
-    return response.data.map((conversion: any) => ({
+    interface ConversionData {
+      affiliateId?: string;
+      campaignName?: string;
+      conversionId?: string;
+      saleAmount?: number;
+      currency?: string;
+      conversionDate: string;
+    }
+
+    return (response.data as ConversionData[]).map((conversion) => ({
       network: 'impact',
       type: 'conversion' as const,
       subCode: conversion.affiliateId || 'UNKNOWN',

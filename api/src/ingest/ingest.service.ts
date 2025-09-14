@@ -45,7 +45,7 @@ export class IngestService {
             );
         }
 
-        const fileHash = await this.getFileHash(fp);
+        const fileHash = this.getFileHash(fp);
         const existingFile = await this.prisma.processedFile.findUnique({
             where: { filePath: fp }
         });
@@ -239,7 +239,7 @@ export class IngestService {
                 });
             } catch (error: any) {
                 // Handle duplicate conversion error
-                if (error.code === 'P2002') {
+                if ((error as any).code === 'P2002') {
                     console.log('Duplicate conversion skipped:', data.extId);
                 } else {
                     throw error;
@@ -255,7 +255,7 @@ export class IngestService {
         });
     }
 
-    private async getFileHash(filePath: string): Promise<string> {
+    private getFileHash(filePath: string): string {
         const fileBuffer = readFileSync(filePath);
         const hashSum = createHash('sha256');
         hashSum.update(fileBuffer);
