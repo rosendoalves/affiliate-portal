@@ -1,0 +1,60 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Network {
+  id        Int       @id @default(autoincrement())
+  name      String    @unique
+  createdAt DateTime  @default(now())
+  conversions Conversion[]
+  clicks      Click[]
+}
+
+model SubAffiliate {
+  id        Int       @id @default(autoincrement())
+  code      String    @unique
+  name      String?
+  createdAt DateTime  @default(now())
+  conversions Conversion[]
+  clicks      Click[]
+}
+
+model Conversion {
+  id              Int       @id @default(autoincrement())
+  networkId       Int
+  subAffiliateId  Int
+  extConversionId String
+  campaign        String?
+  amount          Float     @default(0)
+  currency        String    @default("USD")
+  eventAt         DateTime
+  lastUpdateAt    DateTime  @default(now())
+  Network         Network   @relation(fields: [networkId], references: [id])
+  SubAffiliate    SubAffiliate @relation(fields: [subAffiliateId], references: [id])
+
+  @@unique([networkId, extConversionId])
+  @@index([subAffiliateId, eventAt])
+  @@index([networkId, eventAt])
+}
+
+model Click {
+  id              Int       @id @default(autoincrement())
+  networkId       Int
+  subAffiliateId  Int
+  extClickId      String?
+  campaign        String?
+  eventAt         DateTime
+  Network         Network   @relation(fields: [networkId], references: [id])
+  SubAffiliate    SubAffiliate @relation(fields: [subAffiliateId], references: [id])
+
+  @@index([subAffiliateId, eventAt])
+  @@index([networkId, eventAt])
+}

@@ -1,0 +1,5 @@
+network,type,sub_code,campaign,ext_id,amount,currency,event_at
+impact,click,SUB-001,summer-23,CLK-1001,,USD,2025-08-01T10:12:00Z
+impact,conversion,SUB-001,summer-23,CNV-9001,12.5,USD,2025-08-01T10:20:00Z
+cj,click,SUB-002,brand-cp,CLK-2001,,USD,2025-08-02T11:00:00Z
+cj,conversion,SUB-002,brand-cp,CNV-9100,20,USD,2025-08-02T12:00:00Z

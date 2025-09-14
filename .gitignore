@@ -1,0 +1,20 @@
+# Node / build
+node_modules/
+**/dist/
+coverage/
+npm-debug.log*
+yarn.lock
+pnpm-lock.yaml
+
+# Env (no subir secretos)
+*.env
+!.env.example
+
+# SQLite (según dónde la dejes)
+db/*.db
+db/*.db-journal
+api/db/*.db
+api/db/*.db-journal
+
+# Misc
+.DS_Store
