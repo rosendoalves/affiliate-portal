@@ -26,6 +26,8 @@ services:
     volumes:
       - ./web/src:/app/src
       - ./web/public:/app/public
+      - ./web/index.html:/app/index.html
+      - ./web/package.json:/app/package.json
       - ./web/tsconfig.json:/app/tsconfig.json
       - ./web/tsconfig.app.json:/app/tsconfig.app.json
       - ./web/tsconfig.node.json:/app/tsconfig.node.json

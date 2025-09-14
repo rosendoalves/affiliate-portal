@@ -36,12 +36,12 @@ export class IngestService {
         }
     }
     async ingest(filePath?: string) {
-        const defaultPath = path.resolve(process.cwd(), '../data/drop/events.csv');
+        const defaultPath = path.resolve(process.cwd(), 'data/drop/events.csv');
         const fp = filePath ? path.resolve(filePath) : defaultPath;
 
         if (!existsSync(fp)) {
             throw new BadRequestException(
-                `File not found: ${fp}. Provide ?file=... or place a CSV at ../data/drop/events.csv`
+                `File not found: ${fp}. Provide ?file=... or place a CSV at data/drop/events.csv`
             );
         }
 
