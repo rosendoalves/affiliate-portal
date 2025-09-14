@@ -31,8 +31,8 @@ export class IngestService {
     async autoIngest() { 
         try {
             await this.ingest(); 
-        } catch (error: any) {
-            console.log('Auto-ingest skipped:', error?.message || 'Unknown error');
+        } catch (error: unknown) {
+            console.log('Auto-ingest skipped:', error instanceof Error ? error.message : 'Unknown error');
         }
     }
     async ingest(filePath?: string) {
@@ -239,7 +239,7 @@ export class IngestService {
                 });
             } catch (error: any) {
                 // Handle duplicate conversion error
-                if ((error as any).code === 'P2002') {
+                if (error && typeof error === 'object' && 'code' in error && error.code === 'P2002') {
                     console.log('Duplicate conversion skipped:', data.extId);
                 } else {
                     throw error;
