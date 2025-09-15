@@ -1,7 +1,7 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
-import { SubaffiliateRowDto, SummaryQueryDto, SummaryResponseDto } from './dtos';
+import { SubaffiliateRowDto, SubaffiliatesQueryDto, SummaryQueryDto, SummaryResponseDto } from './dtos';
 
 @ApiTags('reports')
 @Controller('reports')
@@ -68,11 +68,9 @@ export class ReportsController {
 
     @Get('subaffiliates')
     @ApiOkResponse({ type: SubaffiliateRowDto, isArray: true })
-    async bySub(
-        @Query('from') from: string,
-        @Query('to') to: string,
-    ) {
-        const start = new Date(from), end = new Date(to);
+    async bySub(@Query() q: SubaffiliatesQueryDto) {
+        const start = q._fromDate ?? new Date(q.from || '2025-01-01');
+        const end = q._toDate ?? new Date(q.to || '2025-12-31');
 
         const conv = await this.prisma.conversion.findMany({
             where: { eventAt: { gte: start, lte: end } },

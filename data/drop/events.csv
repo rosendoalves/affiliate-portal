@@ -1,7 +1,54 @@
 network,type,sub_code,campaign,ext_id,amount,currency,event_at
-Impact,click,AFF001,Summer Sale,click_123,,USD,2025-01-14T10:00:00Z
-Impact,conversion,AFF001,Summer Sale,conv_456,25.50,USD,2025-01-14T10:05:00Z
-CJ Affiliate,click,AFF002,Black Friday,click_789,,USD,2025-01-14T11:00:00Z
-CJ Affiliate,conversion,AFF002,Black Friday,conv_101,45.00,USD,2025-01-14T11:10:00Z
-Impact,click,AFF001,Winter Campaign,click_202,,USD,2025-01-14T12:00:00Z
-Impact,conversion,AFF001,Winter Campaign,conv_303,15.75,USD,2025-01-14T12:15:00Z
+Impact,click,AFF001,Summer Sale,click_001,,USD,2025-01-14T09:00:00Z
+Impact,click,AFF001,Summer Sale,click_002,,USD,2025-01-14T09:15:00Z
+Impact,click,AFF001,Summer Sale,click_003,,USD,2025-01-14T09:30:00Z
+Impact,conversion,AFF001,Summer Sale,conv_001,29.99,USD,2025-01-14T09:35:00Z
+Impact,click,AFF001,Summer Sale,click_004,,USD,2025-01-14T10:00:00Z
+Impact,click,AFF001,Summer Sale,click_005,,USD,2025-01-14T10:15:00Z
+Impact,conversion,AFF001,Summer Sale,conv_002,45.50,USD,2025-01-14T10:20:00Z
+Impact,click,AFF001,Summer Sale,click_006,,USD,2025-01-14T11:00:00Z
+Impact,conversion,AFF001,Summer Sale,conv_003,19.99,USD,2025-01-14T11:05:00Z
+CJ Affiliate,click,AFF002,Black Friday,click_101,,USD,2025-01-14T09:30:00Z
+CJ Affiliate,click,AFF002,Black Friday,click_102,,USD,2025-01-14T09:45:00Z
+CJ Affiliate,click,AFF002,Black Friday,click_103,,USD,2025-01-14T10:00:00Z
+CJ Affiliate,click,AFF002,Black Friday,click_104,,USD,2025-01-14T10:15:00Z
+CJ Affiliate,click,AFF002,Black Friday,click_105,,USD,2025-01-14T10:30:00Z
+CJ Affiliate,conversion,AFF002,Black Friday,conv_101,89.99,USD,2025-01-14T10:35:00Z
+CJ Affiliate,click,AFF002,Black Friday,click_106,,USD,2025-01-14T11:00:00Z
+CJ Affiliate,click,AFF002,Black Friday,click_107,,USD,2025-01-14T11:15:00Z
+CJ Affiliate,conversion,AFF002,Black Friday,conv_102,125.00,USD,2025-01-14T11:20:00Z
+Impact,click,AFF003,Winter Campaign,click_201,,USD,2025-01-14T10:00:00Z
+Impact,click,AFF003,Winter Campaign,click_202,,USD,2025-01-14T10:30:00Z
+Impact,click,AFF003,Winter Campaign,click_203,,USD,2025-01-14T11:00:00Z
+Impact,click,AFF003,Winter Campaign,click_204,,USD,2025-01-14T11:30:00Z
+Impact,click,AFF003,Winter Campaign,click_205,,USD,2025-01-14T12:00:00Z
+Impact,click,AFF003,Winter Campaign,click_206,,USD,2025-01-14T12:30:00Z
+Impact,conversion,AFF003,Winter Campaign,conv_201,35.99,USD,2025-01-14T12:35:00Z
+CJ Affiliate,click,AFF004,Spring Launch,click_301,,USD,2025-01-14T11:00:00Z
+CJ Affiliate,click,AFF004,Spring Launch,click_302,,USD,2025-01-14T11:15:00Z
+CJ Affiliate,conversion,AFF004,Spring Launch,conv_301,67.50,USD,2025-01-14T11:20:00Z
+CJ Affiliate,click,AFF004,Spring Launch,click_303,,USD,2025-01-14T12:00:00Z
+CJ Affiliate,click,AFF004,Spring Launch,click_304,,USD,2025-01-14T12:15:00Z
+CJ Affiliate,click,AFF004,Spring Launch,click_305,,USD,2025-01-14T12:30:00Z
+CJ Affiliate,conversion,AFF004,Spring Launch,conv_302,42.99,USD,2025-01-14T12:35:00Z
+Impact,click,AFF005,Flash Sale,click_401,,USD,2025-01-14T13:00:00Z
+Impact,click,AFF005,Flash Sale,click_402,,USD,2025-01-14T13:15:00Z
+Impact,click,AFF005,Flash Sale,click_403,,USD,2025-01-14T13:30:00Z
+Impact,click,AFF005,Flash Sale,click_404,,USD,2025-01-14T13:45:00Z
+Impact,click,AFF005,Flash Sale,click_405,,USD,2025-01-14T14:00:00Z
+Impact,click,AFF005,Flash Sale,click_406,,USD,2025-01-14T14:15:00Z
+Impact,click,AFF005,Flash Sale,click_407,,USD,2025-01-14T14:30:00Z
+Impact,conversion,AFF005,Flash Sale,conv_401,15.99,USD,2025-01-14T14:35:00Z
+Impact,conversion,AFF005,Flash Sale,conv_402,22.50,USD,2025-01-14T14:40:00Z
+CJ Affiliate,click,AFF006,Weekend Special,click_501,,USD,2025-01-14T14:00:00Z
+CJ Affiliate,click,AFF006,Weekend Special,click_502,,USD,2025-01-14T14:30:00Z
+CJ Affiliate,conversion,AFF006,Weekend Special,conv_501,199.99,USD,2025-01-14T14:35:00Z
+Impact,click,AFF007,Clearance,click_601,,USD,2025-01-14T15:00:00Z
+Impact,click,AFF007,Clearance,click_602,,USD,2025-01-14T15:15:00Z
+Impact,click,AFF007,Clearance,click_603,,USD,2025-01-14T15:30:00Z
+Impact,click,AFF007,Clearance,click_604,,USD,2025-01-14T15:45:00Z
+Impact,click,AFF007,Clearance,click_605,,USD,2025-01-14T16:00:00Z
+Impact,click,AFF007,Clearance,click_606,,USD,2025-01-14T16:15:00Z
+Impact,click,AFF007,Clearance,click_607,,USD,2025-01-14T16:30:00Z
+Impact,click,AFF007,Clearance,click_608,,USD,2025-01-14T16:45:00Z
+Impact,conversion,AFF007,Clearance,conv_601,8.99,USD,2025-01-14T16:50:00Z

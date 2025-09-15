@@ -22,8 +22,3 @@ export async function getSubaffiliates(params: { from: string; to: string; }) {
   return response.data;
 }
 
-export async function syncFromAPIs(days?: number) {
-  const params = days ? { days: days.toString() } : {};
-  const response = await api.post('/ingest/sync', null, { params });
-  return response.data;
-}

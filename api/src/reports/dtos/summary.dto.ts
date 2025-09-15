@@ -3,11 +3,11 @@ import { IsISO8601, IsOptional, IsString } from 'class-validator';
 import { Transform } from 'class-transformer';
 
 export class SummaryQueryDto {
-  @ApiProperty({ example: '2025-08-01' })
+  @ApiProperty({ example: '2025-01-01' })
   @IsISO8601()
   from!: string;
 
-  @ApiProperty({ example: '2025-08-31' })
+  @ApiProperty({ example: '2025-12-31' })
   @IsISO8601()
   to!: string;
 

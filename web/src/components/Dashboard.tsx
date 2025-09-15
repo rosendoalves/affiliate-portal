@@ -23,7 +23,7 @@ import {
   Refresh,
   FileDownload,
 } from '@mui/icons-material';
-import { getSummary, getSubaffiliates, ingest, syncFromAPIs } from '../api';
+import { getSummary, getSubaffiliates, ingest } from '../api';
 
 type Summary = { 
   clicks: number; 
@@ -47,8 +47,8 @@ type Row = {
 };
 
 export const Dashboard: React.FC = () => {
-  const [from, setFrom] = useState<string>('2025-08-01');
-  const [to, setTo] = useState<string>('2025-08-31');
+  const [from, setFrom] = useState<string>('2025-01-01');
+  const [to, setTo] = useState<string>('2025-12-31');
   const [network, setNetwork] = useState<string>('');
   const [sub, setSub] = useState<string>('');
   const [sum, setSum] = useState<Summary | null>(null);
@@ -92,24 +92,10 @@ export const Dashboard: React.FC = () => {
     }
   }
 
-  async function runSync() {
-    setBusy(true);
-    setMsg('');
-    try {
-      const res = await syncFromAPIs(7); // Sync last 7 days
-      setMsg(`Sync ok: processed=${res.totalProcessed} errors=${res.errors} (${res.seconds}s)`);
-      await load();
-    } catch (e: unknown) {
-      const error = e as { response?: { data?: { message?: string } }; message?: string };
-      setMsg(error?.response?.data?.message || error?.message || 'Error in sync');
-    } finally {
-      setBusy(false);
-    }
-  }
 
   useEffect(() => {
     load();
-  }, [load]);
+  }, [from, to, network, sub]);
 
 
 
@@ -201,14 +187,6 @@ export const Dashboard: React.FC = () => {
                     disabled={busy}
                   >
                     Ingest CSV
-                  </Button>
-                  <Button
-                    variant="outlined"
-                    onClick={runSync}
-                    disabled={busy}
-                    color="secondary"
-                  >
-                    Sync APIs
                   </Button>
                   <Button
                     variant="outlined"

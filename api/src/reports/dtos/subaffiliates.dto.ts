@@ -1,20 +1,22 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsISO8601 } from 'class-validator';
+import { IsISO8601, IsOptional } from 'class-validator';
 import { Transform } from 'class-transformer';
 
 export class SubaffiliatesQueryDto {
-  @ApiProperty({ example: '2025-08-01' })
+  @ApiProperty({ example: '2025-01-01', default: '2025-01-01' })
   @IsISO8601()
-  from!: string;
+  @IsOptional()
+  from?: string = '2025-01-01';
 
-  @ApiProperty({ example: '2025-08-31' })
+  @ApiProperty({ example: '2025-12-31', default: '2025-12-31' })
   @IsISO8601()
-  to!: string;
+  @IsOptional()
+  to?: string = '2025-12-31';
 
-  @Transform(({ obj }: { obj: any }) => new Date(obj.from), { toClassOnly: true })
+  @Transform(({ obj }: { obj: any }) => new Date(obj.from || '2025-01-01'), { toClassOnly: true })
   _fromDate?: Date;
 
-  @Transform(({ obj }: { obj: any }) => new Date(obj.to), { toClassOnly: true })
+  @Transform(({ obj }: { obj: any }) => new Date(obj.to || '2025-12-31'), { toClassOnly: true })
   _toDate?: Date;
 }
 

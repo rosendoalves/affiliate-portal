@@ -14,13 +14,6 @@ export class IngestController {
     return this.ingestService.ingest(q.file);
   }
 
-  @Post('sync')
-  @ApiOperation({ summary: 'Sync data from affiliate network APIs' })
-  @ApiOkResponse({ description: 'Data synced successfully' })
-  async sync(@Query('days') days?: string) {
-    const daysNumber = days ? parseInt(days, 10) : 7;
-    return this.ingestService.syncFromAPIs(daysNumber);
-  }
 
   @Get('history')
   @ApiOperation({ summary: 'Get processing history of files' })
